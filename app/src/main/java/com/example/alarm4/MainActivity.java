@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -45,29 +46,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openTimePickerDialog(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Введите время будильника");
-
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_time_picker, null);
-        builder.setView(dialogView);
 
         final EditText hourEditText = dialogView.findViewById(R.id.hourEditText);
         final EditText minuteEditText = dialogView.findViewById(R.id.minuteEditText);
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            int hour = Integer.parseInt(hourEditText.getText().toString());
-            int minute = Integer.parseInt(minuteEditText.getText().toString());
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Введите время будильника")
+                .setPositiveButton("ОК", null)
+                .setNegativeButton("Отмена", (d, which) -> d.dismiss())
+                .setView(dialogView)
+                .show();
 
-            Alarm alarmZ = startAlarm(new Alarm(hour, minute));
+        Button positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
 
-            dao.insert(DbAlarm.build(alarmZ));
-            addAlarmView(alarmZ);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int hour = Integer.parseInt(hourEditText.getText().toString());
+                int minute = Integer.parseInt(minuteEditText.getText().toString());
+
+                Alarm alarm = new Alarm(hour, minute);
+
+                if (alarm.validate()) {
+                    Alarm alarmZ = startAlarm(alarm);
+                    dao.insert(DbAlarm.build(alarmZ));
+                    addAlarmView(alarmZ);
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Введите корректные данные!", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
-
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     @SuppressLint({"ScheduleExactAlarm", "DefaultLocale"})

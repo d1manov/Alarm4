@@ -34,4 +34,8 @@ public class Alarm {
         a.setCode(alarm.code);
         return a;
     }
+
+    public boolean validate (){
+        return(this.hour < 24 && this.hour >= 0 && this.minute < 60 && this.minute >= 0);
+    }
 }
