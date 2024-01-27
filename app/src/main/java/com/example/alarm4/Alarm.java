@@ -1,6 +1,8 @@
 package com.example.alarm4;
 
 public class Alarm {
+
+    public int code;
     private int hour;
     private int minute;
 

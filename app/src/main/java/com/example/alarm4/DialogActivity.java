@@ -1,103 +1,106 @@
 package com.example.alarm4;
 
+import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class DialogActivity extends AppCompatActivity {
+    Ringtone ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        launchRingtone();
+        ringtone = launchRingtone();
         showAlarmWindow();
     }
 
-    private void showAlarmWindow() {
-        final androidx.appcompat.app.AlertDialog.Builder alertDialog = new AlertDialog.Builder(DialogActivity.this);
-        alertDialog.setTitle("Сработал будильник");
-        alertDialog.setMessage("Решите пример: " + generateMathProblem());
-        final EditText answerEditText = new EditText(DialogActivity.this);
-        alertDialog.setView(answerEditText);
+//    @Override
+//    protected void onResume() {
+//        String[] array = {"com.example.alarm4"};
+//        DevicePolicyManager dpm = (DevicePolicyManager) getApplicationContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
+//        dpm.setLockTaskPackages(getComponentName(), array);
+//        super.onResume();
+//        this.startLockTask();
+//    }
 
-        alertDialog.setPositiveButton("Выключить", new DialogInterface.OnClickListener() {
+    private void showAlarmWindow() {
+        EditText answerEditText = new EditText(DialogActivity.this);
+        answerEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+
+        MathProblem mathproblem = MathProblem.generate(4);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(DialogActivity.this)
+                .setView(answerEditText)
+                .setPositiveButton("Выключить", null)
+                .setTitle("Сработал будильник")
+                .setMessage("Решите пример: " + mathproblem.expression)
+                .show();
+
+        // Получение корневого представления диалога
+        View dialogView = alertDialog.getWindow().getDecorView();
+
+        // Установка цвета фона на корневом представлении диалога
+        dialogView.setBackgroundColor(ContextCompat.getColor(DialogActivity.this, R.color.back));
+
+        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 String answer = answerEditText.getText().toString().trim();
-                if (validateAnswer(answer)) {
+                if (validateAnswer(answer, mathproblem)) {
                     stopAlarm();
+                    alertDialog.dismiss();
                 } else {
-                    // TODO
+                    Toast.makeText(getApplicationContext(), "Неправильно!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        alertDialog.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        alertDialog.show();
     }
 
     private void stopAlarm() {
-        // TODO
+        ringtone.stop();
+        this.finish();
     }
 
-    public void launchRingtone() {
+    public Ringtone launchRingtone() {
         // Воспроизведение звука будильника
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmUri);
         ringtone.play();
+        return ringtone;
     }
 
-    private String generateMathProblem() {
-        Random random = new Random();
-        int num1 = random.nextInt(10) + 1;
-        int num2 = random.nextInt(10) + 1;
-        int operator = random.nextInt(3); // 0: addition, 1: subtraction, 2: multiplication
-        String problem;
-
-        switch (operator) {
-            case 0:
-                problem = num1 + " + " + num2 + " = ?";
-                break;
-            case 1:
-                problem = num1 + " - " + num2 + " = ?";
-                break;
-            case 2:
-                problem = num1 + " * " + num2 + " = ?";
-                break;
-            default:
-                problem = "";
-        }
-
-        return problem;
-    }
-
-    private boolean validateAnswer(String answer) {
+    private boolean validateAnswer(String answer, MathProblem problem) {
+        int result;
         try {
-            int result = Integer.parseInt(answer);
-            // Проверка правильности ответа
+            result = Integer.parseInt(answer);
         } catch (NumberFormatException e) {
             return false;
         }
 
-        return true;
+        return result == problem.answer;
     }
 }
