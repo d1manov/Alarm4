@@ -22,15 +22,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
-import java.util.ArrayList;
+import com.example.alarm4.room.AlarmDao;
+import com.example.alarm4.room.DbAlarm;
+
 import java.util.Calendar;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private final List<Alarm> alarms = new ArrayList<>();
     private LinearLayout alarmsLayout;
     private AlarmManager alarmManager;
-    //private AlarmDao dao;
+    private AlarmDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        //dao = AlarmApp.getInstance().getDatabase().alarmDao();
+        dao = AlarmApp.getInstance().getDatabase().alarmDao();
         alarmsLayout = findViewById(R.id.alarmsLayout);
 
-        //dao.getAll().stream().map(Alarm::build).forEach(this::addAlarmView);
+        dao.getAll().stream().map(Alarm::build).forEach(this::addAlarmView);
     }
 
     public void openTimePickerDialog(View view) {
@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
             Alarm alarmZ = startAlarm(new Alarm(hour, minute));
 
-            alarms.add(alarmZ);
-            //dao.insert(DbAlarm.build(alarmZ));
+            dao.insert(DbAlarm.build(alarmZ));
             addAlarmView(alarmZ);
         });
 
@@ -113,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         deleteButton.setBackgroundColor(ContextCompat.getColor(this, R.color.back));
         deleteButton.setOnClickListener(v -> {
             alarmManager.cancel(makePi(alarm.getCode()));
-            alarms.remove(alarm);
-            //dao.delete(DbAlarm.build(alarm));
+            dao.delete(DbAlarm.build(alarm));
             alarmsLayout.removeView((View) v.getParent());
         });
 

@@ -1,6 +1,11 @@
 package com.example.alarm4;
 
-/* 
+import android.app.Application;
+
+import androidx.room.Room;
+
+import com.example.alarm4.room.AppDatabase;
+
 public class AlarmApp extends Application {
 
     public static AlarmApp instance;
@@ -23,4 +28,4 @@ public class AlarmApp extends Application {
     public AppDatabase getDatabase() {
         return database;
     }
-} */
+}

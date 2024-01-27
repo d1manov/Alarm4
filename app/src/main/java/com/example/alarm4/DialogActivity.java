@@ -41,6 +41,7 @@ public class DialogActivity extends AppCompatActivity {
         MathProblem mathproblem = MathProblem.generate(4);
 
         AlertDialog alertDialog = new AlertDialog.Builder(DialogActivity.this)
+                .setCancelable(false)
                 .setView(answerEditText)
                 .setPositiveButton("Выключить", null)
                 .setTitle("Сработал будильник")
