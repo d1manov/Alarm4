@@ -1,31 +1,15 @@
 package com.example.alarm4;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.Service;
-import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.format.DateUtils;
 import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,26 +17,31 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.function.Function;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<Alarm> alarms;
+    private final List<Alarm> alarms = new ArrayList<>();
     private LinearLayout alarmsLayout;
     private AlarmManager alarmManager;
+    //private AlarmDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        alarms = new ArrayList<>();
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //dao = AlarmApp.getInstance().getDatabase().alarmDao();
         alarmsLayout = findViewById(R.id.alarmsLayout);
+
+        //dao.getAll().stream().map(Alarm::build).forEach(this::addAlarmView);
     }
 
     public void openTimePickerDialog(View view) {
@@ -65,34 +54,24 @@ public class MainActivity extends AppCompatActivity {
         final EditText hourEditText = dialogView.findViewById(R.id.hourEditText);
         final EditText minuteEditText = dialogView.findViewById(R.id.minuteEditText);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int hour = Integer.parseInt(hourEditText.getText().toString());
-                int minute = Integer.parseInt(minuteEditText.getText().toString());
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            int hour = Integer.parseInt(hourEditText.getText().toString());
+            int minute = Integer.parseInt(minuteEditText.getText().toString());
 
-                Alarm alarm = new Alarm(hour, minute);
+            Alarm alarmZ = startAlarm(new Alarm(hour, minute));
 
-                alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                Alarm alarmZ = startAlarm(alarm);
-
-                alarms.add(alarmZ);
-                addAlarmView(alarmZ);
-            }
+            alarms.add(alarmZ);
+            //dao.insert(DbAlarm.build(alarmZ));
+            addAlarmView(alarmZ);
         });
 
-        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    @SuppressLint("ScheduleExactAlarm")
+    @SuppressLint({"ScheduleExactAlarm", "DefaultLocale"})
     private void addAlarmView(final Alarm alarm) {
 
         RelativeLayout alarmLayout = new RelativeLayout(this);
@@ -132,13 +111,11 @@ public class MainActivity extends AppCompatActivity {
         deleteButton.setTextColor(ContextCompat.getColor(this, R.color.white));
 
         deleteButton.setBackgroundColor(ContextCompat.getColor(this, R.color.back));
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alarmManager.cancel(makePi(alarm.code));
-                alarms.remove(alarm);
-                alarmsLayout.removeView((View) v.getParent());
-            }
+        deleteButton.setOnClickListener(v -> {
+            alarmManager.cancel(makePi(alarm.getCode()));
+            alarms.remove(alarm);
+            //dao.delete(DbAlarm.build(alarm));
+            alarmsLayout.removeView((View) v.getParent());
         });
 
         alarmLayout.addView(alarmTextView);
@@ -147,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         alarmsLayout.addView(alarmLayout);
     }
 
-    private PendingIntent makePi (int code) {
+    private PendingIntent makePi(int code) {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         return PendingIntent.getBroadcast(getApplicationContext(), code, intent, PendingIntent.FLAG_IMMUTABLE);
     }
@@ -167,10 +144,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int requestCode = (int) System.currentTimeMillis();
-
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, makePi(requestCode));
 
-        alarm.code = requestCode;
+        alarm.setCode(requestCode);
         return alarm;
     }
+
 }

@@ -6,6 +6,7 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,8 +29,7 @@
 
         <activity
             android:name=".DialogActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
 
         <receiver android:name=".AlarmReceiver" />
     </application>

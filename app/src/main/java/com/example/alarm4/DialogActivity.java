@@ -1,33 +1,30 @@
 package com.example.alarm4;
 
-import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 public class DialogActivity extends AppCompatActivity {
     Ringtone ringtone;
+
+    //    @Override
+    //    protected void onResume() {
+    //        String[] array = {"com.example.alarm4"};
+    //        DevicePolicyManager dpm = (DevicePolicyManager) getApplicationContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
+    //        dpm.setLockTaskPackages(getComponentName(), array);
+    //        super.onResume();
+    //        this.startLockTask();
+    //    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +33,6 @@ public class DialogActivity extends AppCompatActivity {
         showAlarmWindow();
     }
 
-//    @Override
-//    protected void onResume() {
-//        String[] array = {"com.example.alarm4"};
-//        DevicePolicyManager dpm = (DevicePolicyManager) getApplicationContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
-//        dpm.setLockTaskPackages(getComponentName(), array);
-//        super.onResume();
-//        this.startLockTask();
-//    }
 
     private void showAlarmWindow() {
         EditText answerEditText = new EditText(DialogActivity.this);
