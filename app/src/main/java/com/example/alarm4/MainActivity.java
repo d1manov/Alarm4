@@ -7,11 +7,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+        }
+
+        setContentView(R.layout.activity_main);
+
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         dao = AlarmApp.getInstance().getDatabase().alarmDao();
         alarmsLayout = findViewById(R.id.alarmsLayout);
@@ -51,12 +60,19 @@ public class MainActivity extends AppCompatActivity {
         final EditText hourEditText = dialogView.findViewById(R.id.hourEditText);
         final EditText minuteEditText = dialogView.findViewById(R.id.minuteEditText);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Введите время будильника")
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Введите время будильника")
                 .setPositiveButton("ОК", null)
                 .setNegativeButton("Отмена", (d, which) -> d.dismiss())
-                .setView(dialogView)
-                .show();
+                .setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setBackgroundDrawableResource(R.color.back);
 
         Button positiveButton = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
 
@@ -101,19 +117,26 @@ public class MainActivity extends AppCompatActivity {
         textViewParams.addRule(RelativeLayout.CENTER_VERTICAL);
         alarmTextView.setLayoutParams(textViewParams);
 
-        Typeface face = ResourcesCompat.getFont(this, R.font.blitzel);
-        alarmTextView.setTypeface(face);
-        alarmTextView.setTextSize(70);
+        Typeface alarmText_face = ResourcesCompat.getFont(this, R.font.blitzel);
+        Typeface deleteButton_face = ResourcesCompat.getFont(this, R.font.kinetika);
+
+        alarmTextView.setTypeface(alarmText_face);
+        alarmTextView.setTextSize(45);
         alarmTextView.setTextColor(ContextCompat.getColor(this, R.color.white));
 
-        Button deleteButton = new Button(new ContextThemeWrapper(this, R.style.Button_Transparent));
+        Button deleteButton = new Button(new ContextThemeWrapper(this, androidx.appcompat.R.style.Widget_AppCompat_Button_Borderless));
         deleteButton.setText("Удалить");
-        deleteButton.setTextSize(15);
+        deleteButton.setTypeface(deleteButton_face);
+        deleteButton.setTextSize(10);
+        deleteButton.setBackground(null);
         deleteButton.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         // параметры размещения, чтобы кнопка удаления выравнивалась по правому краю и по центру вертикально
-        RelativeLayout.LayoutParams deleteButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        deleteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+        RelativeLayout.LayoutParams deleteButtonParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        deleteButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         deleteButtonParams.addRule(RelativeLayout.CENTER_VERTICAL);
         deleteButton.setLayoutParams(deleteButtonParams);
 

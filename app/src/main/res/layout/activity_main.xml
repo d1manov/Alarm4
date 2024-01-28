@@ -10,34 +10,39 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="Будильник"
-        app:layout_constraintEnd_toStartOf="@+id/addAlarmButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="13dp"/>
-
-    <Button
-        android:id="@+id/addAlarmButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:onClick="openTimePickerDialog"
-        android:text="Добавить будильник"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:fontFamily="@font/kinetika"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/addAlarmButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:onClick="openTimePickerDialog"
+        android:src="@drawable/plus_icon_white"
+        android:scaleType="centerInside"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp">
+        android:layout_marginTop="80dp">
 
         <LinearLayout
             android:id="@+id/alarmsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:layout_marginStart="10dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true" />
 

@@ -17,22 +17,12 @@ import androidx.core.content.ContextCompat;
 public class DialogActivity extends AppCompatActivity {
     Ringtone ringtone;
 
-    //    @Override
-    //    protected void onResume() {
-    //        String[] array = {"com.example.alarm4"};
-    //        DevicePolicyManager dpm = (DevicePolicyManager) getApplicationContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
-    //        dpm.setLockTaskPackages(getComponentName(), array);
-    //        super.onResume();
-    //        this.startLockTask();
-    //    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ringtone = launchRingtone();
         showAlarmWindow();
     }
-
 
     private void showAlarmWindow() {
         EditText answerEditText = new EditText(DialogActivity.this);
