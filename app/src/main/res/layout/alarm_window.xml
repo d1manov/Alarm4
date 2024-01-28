@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -14,40 +12,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/hourEditText"
+        <TextView
+            android:id="@+id/math_problem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="00"
-            android:inputType="number"
-            android:textSize="30dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/hint_color"
+            android:text=" "
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="3dp"
-            android:text=":"
-            android:textSize="30dp"
-            android:textColor="@color/hint_color" />
-
         <EditText
-            android:id="@+id/minuteEditText"
+            android:id="@+id/answer_math_problem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="00"
-            android:inputType="number"
-            android:textSize="30dp"
-            android:textColor="@color/white"
-            android:textColorHint="@color/hint_color"
+            android:hint="ответ"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/hourEditText"
             app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>

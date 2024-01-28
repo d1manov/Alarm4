@@ -26,11 +26,12 @@ public class DialogActivity extends AppCompatActivity {
 
     private void showAlarmWindow() {
         EditText answerEditText = new EditText(DialogActivity.this);
+        answerEditText.setTextColor(ContextCompat.getColor(DialogActivity.this, R.color.white));
         answerEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
 
         MathProblem mathproblem = MathProblem.generate(4);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(DialogActivity.this)
+        AlertDialog alertDialog = new AlertDialog.Builder(DialogActivity.this, R.style.AlertDialogCustomStyle)
                 .setCancelable(false)
                 .setView(answerEditText)
                 .setPositiveButton("Выключить", null)

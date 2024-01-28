@@ -7,9 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +38,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
-        }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
 
         setContentView(R.layout.activity_main);
 
@@ -61,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText minuteEditText = dialogView.findViewById(R.id.minuteEditText);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Введите время будильника")
+        builder.setTitle("Добавление будильника")
                 .setPositiveButton("ОК", null)
                 .setNegativeButton("Отмена", (d, which) -> d.dismiss())
                 .setView(dialogView);
@@ -160,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         return PendingIntent.getBroadcast(getApplicationContext(), code, intent, PendingIntent.FLAG_IMMUTABLE);
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private Alarm startAlarm(Alarm alarm) {
         // Установка задачи будильника для срабатывания в указанное время
 
@@ -175,10 +172,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         int requestCode = (int) System.currentTimeMillis();
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, makePi(requestCode));
+
+        // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, makePi(requestCode));
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), makePi(requestCode));
 
         alarm.setCode(requestCode);
         return alarm;
     }
-
 }
