@@ -68,7 +68,6 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     public Ringtone launchRingtone() {
-        // Воспроизведение звука будильника
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmUri);
         ringtone.play();

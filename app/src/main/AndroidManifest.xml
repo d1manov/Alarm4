@@ -30,10 +30,17 @@
         </activity>
 
         <activity
-            android:name=".DialogActivity"
-            android:exported="true"></activity>
+            android:name=".DialogActivity" />
 
-        <receiver android:name=".AlarmReceiver" />
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

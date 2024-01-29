@@ -174,7 +174,12 @@ public class MainActivity extends AppCompatActivity {
         int requestCode = (int) System.currentTimeMillis();
 
         // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), DateUtils.DAY_IN_MILLIS, makePi(requestCode));
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), makePi(requestCode));
+        // alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendarAlarm.getTimeInMillis(), makePi(requestCode));
+
+        boolean test = alarmManager.canScheduleExactAlarms();
+
+        AlarmManager.AlarmClockInfo alarmClockInfo = new AlarmManager.AlarmClockInfo(calendarAlarm.getTimeInMillis(), makePi(requestCode));
+        alarmManager.setAlarmClock(alarmClockInfo, makePi(requestCode));
 
         alarm.setCode(requestCode);
         return alarm;
