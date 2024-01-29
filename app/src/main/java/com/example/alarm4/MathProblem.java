@@ -20,7 +20,7 @@ public class MathProblem {
             int operator = random.nextInt(2);
             problem = problem.applyOperator(operator, num);
         }
-        problem.expression = problem.expression + " = ? ";
+        problem.expression = problem.expression + " = ";
         if (problem.expression.charAt(1) == '+') {
             problem.expression = problem.expression.substring(2);
         }

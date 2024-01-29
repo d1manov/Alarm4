@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         params.bottomMargin = 1;
         alarmLayout.setLayoutParams(params);
 
-        // параметры ширины и высоты MATCH_PARENT и WRAP_CONTENT
+        // параметры ширины и высоты
         TextView alarmTextView = new TextView(this);
         alarmTextView.setText(String.format("%02d:%02d", alarm.getHour(), alarm.getMinute()));
         alarmTextView.setLayoutParams(new RelativeLayout.LayoutParams(
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         textViewParams.addRule(RelativeLayout.CENTER_VERTICAL);
         alarmTextView.setLayoutParams(textViewParams);
 
+        //шрифты
         Typeface alarmText_face = ResourcesCompat.getFont(this, R.font.blitzel);
         Typeface deleteButton_face = ResourcesCompat.getFont(this, R.font.kinetika);
 
@@ -158,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ScheduleExactAlarm")
     private Alarm startAlarm(Alarm alarm) {
-        // Установка задачи будильника для срабатывания в указанное время
 
         Calendar calendarAlarm = Calendar.getInstance();
         calendarAlarm.setTimeInMillis(System.currentTimeMillis());

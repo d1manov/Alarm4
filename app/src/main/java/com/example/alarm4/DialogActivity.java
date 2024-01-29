@@ -5,14 +5,15 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 public class DialogActivity extends AppCompatActivity {
     Ringtone ringtone;
@@ -25,35 +26,35 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     private void showAlarmWindow() {
-        EditText answerEditText = new EditText(DialogActivity.this);
-        answerEditText.setTextColor(ContextCompat.getColor(DialogActivity.this, R.color.white));
-        answerEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(DialogActivity.this, R.style.AlertDialogCustomStyle);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alarm_window, null);
         MathProblem mathproblem = MathProblem.generate(4);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(DialogActivity.this, R.style.AlertDialogCustomStyle)
-                .setCancelable(false)
-                .setView(answerEditText)
-                .setPositiveButton("Выключить", null)
-                .setTitle("Сработал будильник")
-                .setMessage("Решите пример: " + mathproblem.expression)
-                .show();
+        TextView textView = dialogView.findViewById(R.id.math_problem);
+        textView.setText(mathproblem.expression);
 
-        // Получение корневого представления диалога
-        View dialogView = alertDialog.getWindow().getDecorView();
+        EditText editText = dialogView.findViewById(R.id.answer_math_problem);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
 
-        // Установка цвета фона на корневом представлении диалога
-        dialogView.setBackgroundColor(ContextCompat.getColor(DialogActivity.this, R.color.back));
+        builder.setCancelable(false)
+                .setView(dialogView)
+                .setPositiveButton("Выключить", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
 
         Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String answer = answerEditText.getText().toString().trim();
+                String answer = editText.getText().toString().trim();
                 if (validateAnswer(answer, mathproblem)) {
                     stopAlarm();
                     alertDialog.dismiss();
+                } else if (answer.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Решите пример!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Неправильно!", Toast.LENGTH_SHORT).show();
                 }
