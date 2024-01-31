@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
         final EditText minuteEditText = dialogView.findViewById(R.id.minuteEditText);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Добавление будильника")
+        TextView title = findViewById(R.id.title);
+
+        builder.setCustomTitle(title)
                 .setPositiveButton("ОК", null)
                 .setNegativeButton("Отмена", (d, which) -> d.dismiss())
                 .setView(dialogView);
@@ -75,19 +77,29 @@ public class MainActivity extends AppCompatActivity {
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int hour = Integer.parseInt(hourEditText.getText().toString());
-                int minute = Integer.parseInt(minuteEditText.getText().toString());
 
-                Alarm alarm = new Alarm(hour, minute);
+                String hour_st = hourEditText.getText().toString();
+                String minute_st = minuteEditText.getText().toString();
 
-                if (alarm.validate()) {
-                    Alarm alarmZ = startAlarm(alarm);
-                    dao.insert(DbAlarm.build(alarmZ));
-                    addAlarmView(alarmZ);
-                    dialog.dismiss();
+                if (!hour_st.isEmpty() && !minute_st.isEmpty()) {
+                    int hour = Integer.parseInt(hourEditText.getText().toString());
+                    int minute = Integer.parseInt(minuteEditText.getText().toString());
+
+                    Alarm alarm = new Alarm(hour, minute);
+
+                    if (alarm.validate()) {
+                        Alarm alarmZ = startAlarm(alarm);
+                        dao.insert(DbAlarm.build(alarmZ));
+                        addAlarmView(alarmZ);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Введите корректные данные!", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
-                    Toast.makeText(getApplicationContext(), "Введите корректные данные!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Заполните пустые поля!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }
